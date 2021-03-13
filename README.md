@@ -33,15 +33,20 @@ $ nltk.download('wordnet')
 
 ## An
   - To do...
+  - outputs companies’ name, their sponsors and what area of proptech they are interested in
 
 ## Kristina
   - To do...
+  - outputs companies’ name, their sponsors and what area of proptech they are interested in
 
 ## Ziran
   - To do...
+  - outputs companies’ name, their sponsors and what area of proptech they are interested in
 
 ## Helena
   - To do...
+  - outputs companies’ name, their sponsors and what area of proptech they are interested in
 
 ## Integration
   - Main.py To do...
+  - combines all of our outputs
