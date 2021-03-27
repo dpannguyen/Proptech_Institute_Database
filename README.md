@@ -1,52 +1,14 @@
 # Proptech_Institute_Database
 
-### Table of Contents
-- [About](#About)
-- [Examples of Use Cases](#Examples-of-Use-Cases)
-- [Installation](#Installation)
-- [An](#An)
-- [Kristina](#Kristina)
-- [Ziran](#Ziran)
-- [Helena](#Helena)
-- [Integration](#Integration)
-
-
 ## About
-The code will be in python and we are thinking of using some kind of API, HTTP get request or create our own scrapper tool to parse the companies’ name, their sponsors and what area of proptech they are interested in
-
-## Examples of Use Cases
-
-1. To do...
-2. To do...
-3. To do...
-4. To do...
+A python project built according to PropTech Institute's requirements. It uses Selenium to web crawl and compiles a list of proptech companies and their relevant information. Company's data are stored in dataframe and saved synchronously to Excel spreadsheet.
+List of 2000+ companies posted as example under ```companies_2000.xlsx```. 
 
 ## Installation
 
-```shell script
-$ pip install nltk
-$ python
-$ import nltk
-$ nltk.download('wordnet')
-
+```
+$ pip install requests selenium pandas openpyxl 
 ```
 
-## An
-  - To do...
-  - outputs companies’ name, their sponsors and what area of proptech they are interested in
-
-## Kristina
-  - To do...
-  - outputs companies’ name, their sponsors and what area of proptech they are interested in
-
-## Ziran
-  - To do...
-  - outputs companies’ name, their sponsors and what area of proptech they are interested in
-
-## Helena
-  - To do...
-  - outputs companies’ name, their sponsors and what area of proptech they are interested in
-
-## Integration
-  - Main.py To do...
-  - combines all of our outputs
+## Contribution
+main.py
