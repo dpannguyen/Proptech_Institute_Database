@@ -63,8 +63,8 @@ dataframe.to_excel("companies.xlsx", index = False, engine = "xlsxwriter")
 
 # go to each company's unissu profile
 # get name, tags, description, website, and linkedin
-for i in range(len(companies)):
-    unissu_url = companies[i]
+for company in companies:
+    unissu_url = company
     driver.get(unissu_url)
     driver.find_element_by_css_selector(".company-info")
 
