@@ -1,7 +1,7 @@
-import re
+import pandas
 import requests
 import time
-from company import Company
+import xlsxwriter
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 """from selenium.webdriver.chrome.options import Options"""
@@ -10,7 +10,7 @@ from selenium.common.exceptions import NoSuchElementException
 url = "https://www.unissu.com/proptech-companies"
 
 
-# Chrome Options
+# initialize webdriver (Chrome)
 """
 chrome_options = Options()
 chrome_options.add_argument("--headless")
@@ -19,13 +19,15 @@ driver = webdriver.Chrome(options = chrome_options)
 """
 
 
-# initialize webdriver
+# initialize webdriver (Safari)
 driver = webdriver.Safari()
-driver.implicitly_wait(5)
 
+
+driver.implicitly_wait(10)
 driver.get(url)
 # wait for page to finish loading
 driver.find_element_by_css_selector("title")
+
 
 # close pop-up if necessary
 try:
@@ -34,11 +36,6 @@ try:
 except NoSuchElementException:
     pass
 
-# get total number of companies 
-"""
-search_result = driver.find_element_by_css_selector(".match-count-container").text
-companies_count = int(re.search("[0-9]+", search_result).group())
-"""
 
 # load all companies
 while True:
@@ -48,28 +45,32 @@ while True:
     except NoSuchElementException:
         break
 
+
 # get links of all companies' profiles
 companies = []
 company_elems = driver.find_elements_by_css_selector(".results-container .company-box a")
 for company_link in company_elems:
-    company = Company(company_link.get_attribute("href"))
+    company = company_link.get_attribute("href")
     companies.append(company)
+
+
+# create dataframe object to write to excel
+keys = ["Name", "Unissu URL", "Tags", "Description", "Website", "Linkedin"]
+data = dict.fromkeys(keys, [])
+dataframe = pandas.DataFrame(data)
+dataframe.to_excel("companies_1000.xlsx", index = False, engine = "xlsxwriter")
+
 
 # go to each company's unissu profile
 # get name, tags, description, website, and linkedin
-for company in companies:
-    driver.get(company.get_url())
+for i in range(len(companies)):
+    unissu_url = companies[i]
+    driver.get(unissu_url)
     driver.find_element_by_css_selector(".company-info")
 
-    # get company's name
-    name_elem = driver.find_element_by_css_selector(".company-name")
-    driver.execute_script("arguments[0].scrollIntoView(true);", name_elem)
-    time.sleep(1)
-    name = name_elem.text
-
     # get company's tags
-    # (accounting for the possibility of multiple tags e.g. Wallabe)
-    tags = []
+    # (accounting for the possibility of multiple tags e.g. Wallabe or no tags)
+    tags = ''
     try:
         more_tag = driver.find_element_by_css_selector(".tags-row span[class*='green-tag']")
         more_tag.click()
@@ -77,8 +78,19 @@ for company in companies:
         pass
 
     tag_elems = driver.find_elements_by_css_selector(".tags-row span")
-    for tag in tag_elems:
-        tags.append(tag.text)
+    if len(tag_elems) != 0:
+        for tag in tag_elems[:-1]:
+            tags += tag.text + ", "
+        if tag_elems[-1].text != 'Show Less':
+            tags += tag_elems[-1].text
+        else:
+            tags = tags[:-2]
+
+    # get company's name
+    name_elem = driver.find_element_by_css_selector(".company-name")
+    driver.execute_script("arguments[0].scrollIntoView(true);", name_elem)
+    time.sleep(1)
+    name = name_elem.text
     
     # get company's description
     description = driver.find_element_by_css_selector(".description").text
@@ -95,20 +107,17 @@ for company in companies:
         pass
 
     # store all info into company's profile
-    company.set_name(name)
-    company.set_tags(tags)
-    company.set_description(description)
-    company.set_website(website)
-    company.set_linkedin(linkedin)
+    company_data = dict.fromkeys(keys, '')
+    company_data["Name"] = name
+    company_data["Unissu URL"] = unissu_url
+    company_data["Tags"] = tags
+    company_data["Description"] = description
+    company_data["Website"] = website
+    company_data["Linkedin"] = linkedin
 
+    # write to excel
+    dataframe = dataframe.append(company_data, ignore_index = True)
+    dataframe.to_excel("companies_1000.xlsx", index = False, engine = "xlsxwriter")
 
-# print company's profile info for testing
-"""
-for company in companies:
-    tags = ''
-    for tag in company.get_tags():
-        tags += tag + " "
-    print(company.get_url() + " " + company.get_name() + " " + tags + company.get_description() + " " + company.get_website() + " " + company.get_linkedin() + "\n")
-"""
 
 driver.close()
