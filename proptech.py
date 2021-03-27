@@ -76,6 +76,7 @@ def get_company_tags():
     try:
         more_tag = driver.find_element_by_css_selector(".tags-row span[class*='green-tag']")
         more_tag.click()
+        time.sleep(1)
     except NoSuchElementException:
         pass
 
