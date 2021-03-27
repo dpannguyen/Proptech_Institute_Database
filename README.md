@@ -10,5 +10,5 @@ List of 2000+ companies posted as example under ```companies_2000.xlsx```.
 ## Installation
 
 ```
-$ pip install requests selenium pandas openpyxl 
+$ pip install requests selenium pandas openpyxl xlsxwriter
 ```
